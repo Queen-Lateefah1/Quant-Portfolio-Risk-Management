@@ -1,0 +1,7 @@
+pandas==3.0.2
+numpy==2.4.4
+yfinance==1.5.1
+pyarrow==25.0.0
+matplotlib==3.10.8
+jupyter==1.1.1
+pytest==9.1.1
