@@ -24,7 +24,7 @@ one big script — see "Architecture" below for why.
 |---|---|---|
 | 1 — Data Collection | ✅ Done | Downloads adjusted close prices for a 10-stock universe + S&P 500 benchmark, computes log returns, looks up sector classifications |
 | 2 — Data Cleaning | ✅ Done | Aligns trading dates across tickers, removes stale prices, winsorizes extreme returns, builds an equal-weighted portfolio return series |
-| 3 — Portfolio Construction | ⏳ Not started | Market-cap weighting, user-defined weights, rebalancing |
+| 3 — Portfolio Construction | ✅ Done | Three weighting schemes (Market-cap weighting, user-defined weights, rebalancing)  builds daily portfolio value/P&L/returns with optional rebalancing |
 | 4 — Historical Simulation VaR | ⏳ Not started | |
 | 5–7 — Volatility Scaling | ⏳ Not started | EWMA, GARCH, GJR-GARCH |
 | 8 — Backtesting | ⏳ Not started | |
