@@ -25,8 +25,8 @@ one big script — see "Architecture" below for why.
 | 1 — Data Collection | ✅ Done | Downloads adjusted close prices for a 10-stock universe + S&P 500 benchmark, computes log returns, looks up sector classifications |
 | 2 — Data Cleaning | ✅ Done | Aligns trading dates across tickers, removes stale prices, winsorizes extreme returns, builds an equal-weighted portfolio return series |
 | 3 — Portfolio Construction | ✅ Done | Three weighting schemes (Market-cap weighting, user-defined weights, rebalancing)  builds daily portfolio value/P&L/returns with optional rebalancing |
-| 4 — Historical Simulation VaR | ⏳ Not started | |
-| 5–7 — Volatility Scaling | ⏳ Not started | EWMA, GARCH, GJR-GARCH |
+| 4 — Historical Simulation VaR | ✅ Done | Historical Simulation VaR across 250/500/750-day windows and 95%/99%/99.5% confidence levels, Expected Shortfall, rolling VaR time series |
+| 5–7 — Volatility Scaling | In progress | EWMA volatility scaling done (GARCH, GJR-GARCH still pending) |
 | 8 — Backtesting | ⏳ Not started | |
 | 9 — Model Comparison | ⏳ Not started | |
 | 10 — Stress Testing | ⏳ Not started | |
@@ -46,7 +46,10 @@ against the S&P 500 (^GSPC).
 ├── src/
 │   ├── data_collection/    # Phase 1: download, validate, compute returns
 │   ├── data_cleaning/      # Phase 2: align dates, remove stale prices, winsorize
-│   └── portfolio/          # Portfolio return construction
+│   ├── portfolio/          # Phase 3: weighting schemes, portfolio value/P&L/returns
+│   ├── var/                # Phase 4: Historical Simulation VaR, Expected Shortfall
+│   ├── volatility/         # Phase 5: EWMA volatility scaling
+│   └── visualization/      # Charts for VaR and volatility
 ├── tests/                  # pytest suite — normal, known-answer, edge, invalid-input cases
 ├── data/
 │   ├── raw/                 # Untouched, as-downloaded data
@@ -72,17 +75,19 @@ pip install -r requirements.txt
 ```bash
 jupyter notebook
 ```
-Then open, in order: `notebooks/data_collection.ipynb` (Phase 1), followed
-by `notebooks/phase2_data_cleaning.ipynb` (Phase 2). Phase 2 reads Phase 1's
-output, so Phase 1 must be run first.
+Then open, in order: `notebooks/data_collection.ipynb` (Phase 1),
+`notebooks/phase2_data_cleaning.ipynb` (Phase 2),
+`notebooks/phase3_portfolio_construction.ipynb` (Phase 3), and
+`notebooks/phase4_5_var_ewma.ipynb` (Phase 4 & 5). Each phase reads the
+previous phase's saved output, so they must be run in order.
 
 ## Testing
 
 ```bash
 python -m pytest tests/ -v
 ```
-34 tests covering normal cases, known-answer cases, edge cases, and
-invalid-input cases for every module.
+90 tests total (Phases 1-5), covering normal cases, known-answer
+cases, edge cases, and invalid-input cases for every module..
 
 ## Data Sources
 
