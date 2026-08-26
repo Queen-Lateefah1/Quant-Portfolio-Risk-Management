@@ -5,3 +5,4 @@ pyarrow==25.0.0
 matplotlib==3.10.8
 jupyter==1.1.1
 pytest==9.1.1
+arch==8.0.0 
