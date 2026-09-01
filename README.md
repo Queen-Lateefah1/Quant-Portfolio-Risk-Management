@@ -27,7 +27,7 @@ one big script — see "Architecture" below for why.
 | 3 — Portfolio Construction | ✅ Done | Three weighting schemes (Market-cap weighting, user-defined weights, rebalancing)  builds daily portfolio value/P&L/returns with optional rebalancing |
 | 4 — Historical Simulation VaR | ✅ Done | Historical Simulation VaR across 250/500/750-day windows and 95%/99%/99.5% confidence levels, Expected Shortfall, rolling VaR time series |
 | 5–7 — Volatility Scaling | ✅ Done | EWMA, GARCH(1,1), and GJR-GARCH volatility scaling — all three feed into scaled Historical VaR |
-| 8 — Backtesting | ⏳ Not started | |
+| 8 — Backtesting | ⏳ in progress | |
 | 9 — Model Comparison | ⏳ Not started | |
 | 10 — Stress Testing | ⏳ Not started | |
 | Dashboard | ⏳ Not started | Streamlit |
