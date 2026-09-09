@@ -30,7 +30,7 @@ one big script — see "Architecture" below for why.
 | 8 — Backtesting | ✅ Done | Kupiec POF, Christoffersen Independence + Conditional Coverage, Basel Traffic Light |
 | 9 — Model Comparison | ✅ Done | Compares Historical, EWMA, GARCH, GJR-GARCH VaR side by side, with a calibration-based ranking |
 | 10 — Stress Testing | ✅ Done | Historical scenario replay (2008, COVID, 2022, 2023 banking stress, tech selloff), volatility/correlation/sector shocks — correlation shock uses actual asset-level covariance matrices, not a simplified approximation |
-| Dashboard | ⏳ Not started | Streamlit |
+| Dashboard | ⏳ In progress | Streamlit |
 
 ## Universe
 
