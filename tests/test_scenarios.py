@@ -29,6 +29,30 @@ def test_normal_case_multi_asset_weighted_correctly():
     assert result == pytest.approx(-0.15)  # 0.5*-0.20 + 0.5*-0.10
 
 
+def test_known_answer_excludes_pre_ipo_ticker_and_renormalizes():
+    """A ticker with no price data for the window (e.g. hadn't IPO'd
+    yet, like Tesla during the 2008 crisis) should be excluded, with
+    the REMAINING tickers' weights renormalized to 100% — not silently
+    treated as a 0% contribution, which would understate the loss."""
+    dates = pd.date_range("2008-09-01", periods=2)
+    prices = pd.DataFrame(
+        {"AAPL": [100.0, 70.0], "TSLA": [np.nan, np.nan]},  # TSLA didn't exist in 2008
+        index=dates,
+    )
+    weights = pd.Series({"AAPL": 0.5, "TSLA": 0.5})
+    result = compute_scenario_return(prices, weights)
+    # AAPL's -30% return should apply at FULL weight (renormalized to 1.0), not half-weight
+    assert result == pytest.approx(-0.30)
+
+
+def test_invalid_input_all_tickers_missing_data_raises():
+    dates = pd.date_range("2008-09-01", periods=2)
+    prices = pd.DataFrame({"TSLA": [np.nan, np.nan]}, index=dates)
+    weights = pd.Series({"TSLA": 1.0})
+    with pytest.raises(ValueError, match="no ticker"):
+        compute_scenario_return(prices, weights)
+
+
 def test_edge_case_no_price_change_gives_zero_return():
     prices = pd.DataFrame({"AAPL": [100.0, 100.0]}, index=pd.date_range("2020-01-01", periods=2))
     weights = pd.Series({"AAPL": 1.0})

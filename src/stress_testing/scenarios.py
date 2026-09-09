@@ -80,6 +80,16 @@ def compute_scenario_return(prices: pd.DataFrame, weights: pd.Series) -> float:
     which is a different (and more decision-relevant) question than
     "what did the market do during that crisis."
 
+    A ticker with no data for the scenario window (most commonly: it
+    hadn't IPO'd yet — e.g. Tesla in 2008, Meta before 2012) is excluded
+    from the calculation, and the REMAINING tickers' weights are
+    renormalized to sum back to 1.0, so the result answers "what would
+    the portion of the portfolio that existed back then have done,"
+    rather than silently understating the loss by treating the missing
+    weight as a 0% contribution. Excluded tickers are logged explicitly
+    (never silent) — check logs/warnings when replaying scenarios far
+    enough in the past that young companies may not have existed yet.
+
     Parameters
     ----------
     prices:
@@ -92,13 +102,16 @@ def compute_scenario_return(prices: pd.DataFrame, weights: pd.Series) -> float:
     -------
     float
         Portfolio return over the scenario window (decimal, can be
-        negative for a loss or positive for a gain).
+        negative for a loss or positive for a gain), computed over
+        whichever tickers had usable data, reweighted to sum to 1.0.
 
     Raises
     ------
     ValueError
-        If `prices` is empty, or if `weights` references tickers not
-        present in `prices`.
+        If `prices` is empty, if `weights` references tickers not
+        present in `prices` at all (a genuine data problem, not a
+        pre-IPO gap), or if EVERY ticker is missing data for this
+        window (nothing usable to compute).
     """
     if prices.empty:
         raise ValueError("prices cannot be empty")
@@ -108,7 +121,26 @@ def compute_scenario_return(prices: pd.DataFrame, weights: pd.Series) -> float:
         raise ValueError(f"weights reference tickers not in prices: {sorted(missing)}")
 
     ticker_returns = prices.iloc[-1] / prices.iloc[0] - 1
-    portfolio_return = float((ticker_returns[weights.index] * weights).sum())
+    ticker_returns = ticker_returns[weights.index]
+
+    valid_mask = ticker_returns.notna()
+    if not valid_mask.all():
+        excluded = ticker_returns.index[~valid_mask].tolist()
+        excluded_weight = float(weights[~valid_mask].sum())
+        logger.warning(
+            "Excluded %d ticker(s) with no data for this scenario window (likely pre-IPO): "
+            "%s (%.1f%% of portfolio weight) — remaining weights renormalized to 100%%",
+            len(excluded), excluded, excluded_weight * 100,
+        )
+
+    if not valid_mask.any():
+        raise ValueError("no ticker in this portfolio has usable data for this scenario window")
+
+    valid_returns = ticker_returns[valid_mask]
+    valid_weights = weights[valid_mask]
+    valid_weights = valid_weights / valid_weights.sum()  # renormalize to 1.0
+
+    portfolio_return = float((valid_returns * valid_weights).sum())
 
     logger.info("Scenario portfolio return: %.4f", portfolio_return)
     return portfolio_return
