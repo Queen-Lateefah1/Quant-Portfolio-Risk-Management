@@ -1,0 +1,12 @@
+scenario,category,stressed_return,stressed_loss,stressed_var,stressed_es
+2008 Financial Crisis,Historical,-0.2948016175061877,294801.6175061877,,
+COVID Crash 2020,Historical,-0.336892857248854,336892.857248854,,
+Inflation Shock 2022,Historical,-0.2657015474933874,265701.5474933874,,
+Banking Stress 2023,Historical,0.059949654636634056,-59949.654636634055,,
+Tech Selloff Scenario,Historical,-0.2673480129492505,267348.01294925046,,
+Equity market down 5%,Hypothetical,-0.05,50000.0,,
+Equity market down 10%,Hypothetical,-0.1,100000.0,,
+Equity market down 20%,Hypothetical,-0.2,200000.0,,
+Volatility doubles,Hypothetical,,47683.291708889155,0.04768329170888916,0.06736206553819067
+Correlation spikes,Hypothetical,,33489.372700610125,0.03348937270061013,0.04531926715104478
+Sector-specific shock (Technology -20%),Hypothetical,-0.06000000000000001,60000.000000000015,,
