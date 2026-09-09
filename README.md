@@ -27,9 +27,9 @@ one big script — see "Architecture" below for why.
 | 3 — Portfolio Construction | ✅ Done | Three weighting schemes (Market-cap weighting, user-defined weights, rebalancing)  builds daily portfolio value/P&L/returns with optional rebalancing |
 | 4 — Historical Simulation VaR | ✅ Done | Historical Simulation VaR across 250/500/750-day windows and 95%/99%/99.5% confidence levels, Expected Shortfall, rolling VaR time series |
 | 5–7 — Volatility Scaling | ✅ Done | EWMA, GARCH(1,1), and GJR-GARCH volatility scaling — all three feed into scaled Historical VaR |
-| 8 — Backtesting | ⏳ in progress | |
-| 9 — Model Comparison | ⏳ Not started | |
-| 10 — Stress Testing | ⏳ Not started | |
+| 8 — Backtesting | ✅ Done | Kupiec POF, Christoffersen Independence + Conditional Coverage, Basel Traffic Light |
+| 9 — Model Comparison | ✅ Done | Compares Historical, EWMA, GARCH, GJR-GARCH VaR side by side, with a calibration-based ranking |
+| 10 — Stress Testing | ✅ Done | Historical scenario replay (2008, COVID, 2022, 2023 banking stress, tech selloff), volatility/correlation/sector shocks — correlation shock uses actual asset-level covariance matrices, not a simplified approximation |
 | Dashboard | ⏳ Not started | Streamlit |
 
 ## Universe
@@ -48,8 +48,10 @@ against the S&P 500 (^GSPC).
 │   ├── data_cleaning/      # Phase 2: align dates, remove stale prices, winsorize
 │   ├── portfolio/          # Phase 3: weighting schemes, portfolio value/P&L/returns
 │   ├── var/                # Phase 4: Historical Simulation VaR, Expected Shortfall
-│   ├── volatility/         # Phase 5-7: EWMA, GARCH(1,1), GJR-GARCH volatiliity scaling
-│   └── visualization/      # Charts for VaR and volatility
+│ │   ├── volatility/         # Phase 5-7: EWMA, GARCH(1,1), GJR-GARCH volatility scaling
+│   ├── backtesting/        # Phase 8-9: Kupiec, Christoffersen, Basel, model comparison
+│   ├── stress_testing/     # Phase 10: historical replay, volatility/correlation/sector shocks
+│   └── visualization/      # Charts for every phase above
 ├── tests/                  # pytest suite — normal, known-answer, edge, invalid-input cases
 ├── data/
 │   ├── raw/                 # Untouched, as-downloaded data
@@ -79,16 +81,18 @@ Then open, in order: `notebooks/data_collection.ipynb` (Phase 1),
 `notebooks/phase2_data_cleaning.ipynb` (Phase 2),
 `notebooks/phase3_portfolio_construction.ipynb` (Phase 3),
 `notebooks/phase4_5_var_ewma.ipynb` (Phase 4 & 5),
-`notebooks/phase6_garch.ipynb` (Phase 6), and
-`notebooks/phase7_gjr_garch.ipynb` (Phase 7). Each phase reads the
-previous phase's saved output, so they must be run in order.
+`notebooks/phase6_garch.ipynb` (Phase 6),
+`notebooks/phase7_gjr_garch.ipynb` (Phase 7),
+`notebooks/phase8_9_backtesting_comparison.ipynb` (Phase 8 & 9), and
+`notebooks/phase10_stress_testing.ipynb` (Phase 10). Each phase reads
+the previous phase's saved output, so they must be run in order.
 
 ## Testing
 
 ```bash
 python -m pytest tests/ -v
 ```
-126 tests total (Phases 1-7), covering normal cases, known-answer
+205 tests total (Phases 1-10), covering normal cases, known-answer
 cases, edge cases, and invalid-input cases for every module.
 
 ## Data Sources
